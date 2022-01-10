@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     // timer
-    const deadLine = '2022-01-10'
+    const deadLine = '2030-01-10'
     function getTimeRemaining(endtime) {
         const t = Date.parse(endtime) - Date.parse(new Date)
 
@@ -107,8 +107,14 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.addEventListener('click', (() => {
             modalData.style.display = 'block'
             document.body.style.overflow = 'hidden'
+            clearTimeout(timer)
         }))
     })
+
+    function open() {
+        modalData.style.display = 'block'
+        document.body.style.overflow = 'hidden'
+    }
 
     modalCloseBtn.addEventListener('click', close)
 
@@ -117,5 +123,17 @@ document.addEventListener('DOMContentLoaded', () => {
             close()
         }
     })
+
+    const timer = setTimeout(open, 5000)
+
+    //show modal when scroll to bottom
+    function showModalScroll() {
+        if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
+            open()
+            window.removeEventListener('scroll', showModalScroll)
+        }
+
+    }
+    window.addEventListener('scroll', showModalScroll)
 
 })
