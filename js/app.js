@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.addEventListener('click', (() => {
             modalData.style.display = 'block'
             document.body.style.overflow = 'hidden'
-            clearTimeout(timer)
+            // clearTimeout(timer) убрали временно таймер
         }))
     })
 
@@ -208,5 +208,51 @@ document.addEventListener('DOMContentLoaded', () => {
         '.menu__field .container',
         'menu__item'
     ).render()
+
+    // POST forms
+
+    const forms = document.querySelectorAll('form')
+    const messageObj = {
+        loading: "Loading",
+        success: "Thank You, we will reach you soon",
+        failure: 'huston we have a problem!'
+    }
+    forms.forEach((item) => {
+        formData(item)
+    })
+
+    function formData(form) {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault()
+
+            const statusMessage = document.createElement('div')
+            statusMessage.innerText = messageObj.loading
+            form.append(statusMessage)
+
+            const request = new XMLHttpRequest()
+            request.open('POST', 'server.php')
+            request.setRequestHeader('Content-type', 'application/json; charset=utf-8')
+            const formData = new FormData(form)
+
+            const object = {}
+            formData.forEach((item, i) => {
+                object[i] = item
+            })
+            const json = JSON.stringify(object)
+            request.send(json)
+            request.addEventListener('load', () => {
+                if (request.status === 200) {
+                    console.log(request.response)
+                    statusMessage.innerText = messageObj.success
+                    form.reset()
+                    setTimeout(() => {
+                        statusMessage.remove()
+                    }, 2000)
+                } else {
+                    statusMessage.innerText = messageObj.failure
+                }
+            })
+        })
+    }
 
 })
